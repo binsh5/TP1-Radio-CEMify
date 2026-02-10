@@ -53,8 +53,25 @@ namespace adaptation_tp1_console
         /// ----------------------------------------------------------------------------------------------------
         internal static List<Morceau> ChargerMorceaux(string pNomDuFichier, List<Morceau> pListeMorceaux)
         {
-            // À COMPLÉTER...
+            List<string> pListe = new List<string>();
+            if (!File.Exists(BIBLIOTHEQUE))
+            {
+                
+            }
 
+            using (StreamReader reader = new StreamReader(BIBLIOTHEQUE))
+            {
+                string ligne;
+                while (!reader.EndOfStream)
+                {
+                    ligne = reader.ReadLine();
+                    string[] info = ligne.Split('|');
+                    string[] duretemp = info[4].Split(":");
+                    int dure = 60 * int.Parse(duretemp[0])+ int.Parse(duretemp[1]);
+                    Morceau morceau = new Morceau(info[0], info[1], info[2], int.Parse(info[3]), dure);
+                    pListeMorceaux.Add(morceau);
+                }
+            }
             return pListeMorceaux;
         }
         #endregion
@@ -66,7 +83,10 @@ namespace adaptation_tp1_console
         /// </summary>
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// ----------------------------------------------------------------------------------------
-        
+        void AfficherListeDeMorceaux()
+        {
+
+        }
         #endregion
 
         #region TODO 03 : Ajouter un morceau au répertoire (3%)
