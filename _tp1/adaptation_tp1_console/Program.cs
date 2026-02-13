@@ -28,14 +28,52 @@ namespace adaptation_tp1_console
             #region TODO 11 : Chargements des listes à partir des fichiers CSV (5%)
             // TODO 11 : Appeler la méthode ChargerMorceaux() pour charger le répertoire musical de la radio étudiante, ainsi
             // que la liste de lecture de l'utilisateur SI APPROPRIÉ
-           
+            string pNomDuFichier = null;
+            List<Morceau> pListeMorceaux = new List<Morceau>();
+            ChargerMorceaux(pNomDuFichier, pListeMorceaux);
             #endregion
 
             #region TODO 12 : Lier l'ensemble des fonctions (18%)
             /// TODO 12 :
             /// Effectuer la logique du menu utilisateur dans une boucle qui prend fin seulement lorsque l'utilisateur décide de quitter.
             /// Astuces : la boucle while et le switch-case vous seront utiles ;)
-            
+            bool a = true;
+            while (a == true)
+            {
+                AfficherMenu();
+                int option = int.Parse(Console.ReadLine());
+                switch (option)
+                {
+                    case 1:
+                        AfficherListeDeMorceaux(pListeMorceaux);
+                        break;
+                    case 2:
+                        Console.Clear();
+                        Console.WriteLine("Enter les paramètres suivant:");
+                        Console.WriteLine("Artiste :");
+                        string artiste = Console.ReadLine();
+                        Console.WriteLine("Album :");
+                        string album = Console.ReadLine();
+                        Console.WriteLine("Titre :");
+                        string titre = Console.ReadLine();
+                        Console.WriteLine("Cote sur 5:");
+                        int cote = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Durée en secondes");
+                        int duree = int.Parse(Console.ReadLine());
+                        opérationAjouter(pListeMorceaux, artiste, album, titre, cote, duree);
+                        break;
+                    case 3:
+                        Console.Clear();
+                        Console.WriteLine("Enter la position du morceau à supprimer dans la liste:");
+                        int index = int.Parse(Console.ReadLine());
+                        OpérationSupprimer(pListeMorceaux, index);
+                        break;
+                    case 4: // a continuer 
+
+                    default: Console.WriteLine("option invalide");
+                        break;
+                }
+            }
             #endregion
 
         }
@@ -67,7 +105,7 @@ namespace adaptation_tp1_console
                     ligne = reader.ReadLine();
                     string[] info = ligne.Split('|');
                     string[] duretemp = info[4].Split(":");
-                    int dure = 60 * int.Parse(duretemp[0])+ int.Parse(duretemp[1]);
+                    int dure = 60 * int.Parse(duretemp[0]) * 60 + int.Parse(duretemp[1]);
                     Morceau morceau = new Morceau(info[0], info[1], info[2], int.Parse(info[3]), dure);
                     pListeMorceaux.Add(morceau);
                 }
@@ -83,7 +121,7 @@ namespace adaptation_tp1_console
         /// </summary>
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// ----------------------------------------------------------------------------------------
-        void AfficherListeDeMorceaux(List<Morceau> pListeMorceaux)
+        static void AfficherListeDeMorceaux(List<Morceau> pListeMorceaux)
         {
             for (int i = 0; i > pListeMorceaux.Count; i++)
             {
@@ -105,10 +143,11 @@ namespace adaptation_tp1_console
         /// <param name="pDurée"> durée du morceau en secondes </param>
         /// <returns>  liste de morceaux contenant une chanson additionnelle  </returns>
         /// ----------------------------------------------------------------------------------------
-        void opérationAjouter(List<Morceau> pListeMorceaux, string pArtiste, string pAlbum, string pTitre, int pCote, int pDurée)
+        internal static List<Morceau> opérationAjouter(List<Morceau> pListeMorceaux, string pArtiste, string pAlbum, string pTitre, int pCote, int pDurée)
         {
             Morceau morceau = new Morceau(pArtiste, pAlbum, pTitre, pCote, pDurée);
             pListeMorceaux.Add(morceau);
+            return pListeMorceaux;
         }
         #endregion
 
@@ -121,9 +160,10 @@ namespace adaptation_tp1_console
         /// <param name="pIndexMorceau"> index du morceau à supprimer dans la liste </param>
         /// <returns>  liste de morceaux contenant une chanson en moins  </returns>
         /// ----------------------------------------------------------------------------------------
-        void OpérationSupprimer(List<Morceau> pListeMorceaux, int pIndexMorceau)
+        internal static List<Morceau> OpérationSupprimer(List<Morceau> pListeMorceaux, int pIndexMorceau)
         {
             pListeMorceaux.RemoveAt(pIndexMorceau);
+            return pListeMorceaux;
         }
         #endregion
 
@@ -137,7 +177,7 @@ namespace adaptation_tp1_console
         /// <param name="pCote"> valeur de la nouvelle cote </param>
         /// <returns>  liste de morceaux modifiée  </returns>
         /// ----------------------------------------------------------------------------------------
-        void OpérationModiferCote(List<Morceau> pListeMorceaux, int pIndexMorceau, int pCote)
+        internal static List<Morceau> OpérationModiferCote(List<Morceau> pListeMorceaux, int pIndexMorceau, int pCote)
         {
             string pArtiste = pListeMorceaux[pIndexMorceau].Artiste;
             string pAlbum = pListeMorceaux[pIndexMorceau].Album;
@@ -145,6 +185,7 @@ namespace adaptation_tp1_console
             int pDuré = pListeMorceaux[pIndexMorceau].Durée;
             Morceau morceau = new Morceau(pArtiste, pAlbum, pTitre, pCote, pDuré);
             pListeMorceaux[pIndexMorceau] = morceau;
+            return pListeMorceaux;
         }
         #endregion
 
@@ -156,9 +197,10 @@ namespace adaptation_tp1_console
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// <returns>  liste de morceaux triée  </returns>
         /// ----------------------------------------------------------------------------------------
-        void OpérationTrier(List<Morceau> pListeMorceaux)
+        internal static List<Morceau> OpérationTrier(List<Morceau> pListeMorceaux) // a refaire
         {
             pListeMorceaux.Sort((x, y) => y.Cote.CompareTo(x.Cote));
+            return pListeMorceaux;
         }
         #endregion
 
@@ -171,7 +213,7 @@ namespace adaptation_tp1_console
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// <param name="pIndexMorceau"> index du morceau sélectionné </param>
         /// ----------------------------------------------------------------------------------------
-        void AfficherMorceauCourant(List<Morceau> pListeMorceaux, int pIndexMorceau)
+        static void AfficherMorceauCourant(List<Morceau> pListeMorceaux, int pIndexMorceau)
         {
             string pArtiste = pListeMorceaux[pIndexMorceau].Artiste;
             string pAlbum = pListeMorceaux[pIndexMorceau].Album;
@@ -189,7 +231,7 @@ namespace adaptation_tp1_console
         /// </summary>
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// ----------------------------------------------------------------------------------------
-        void AfficherStats(List<Morceau> pListeMorceaux)
+        static void AfficherStats(List<Morceau> pListeMorceaux)
         {
             int temp = 0;
             for (int i = 0; i > pListeMorceaux.Count; i++)
@@ -217,7 +259,7 @@ namespace adaptation_tp1_console
         /// <param name="pNomDuFichier"> nom du fichier dans lequel sauvegarder les informations </param>
         /// <param name="pListeMorceaux"> liste de morceaux à sauvegarder </param>
         /// -----------------------------------------------------------------------------------------------
-        void OpérationQuitter(List<Morceau> pListeMorceaux, string pNomDuFichier)
+        static void OpérationQuitter(List<Morceau> pListeMorceaux, string pNomDuFichier)
         {
             for (int i = 0; i < pListeMorceaux.Count; i++)
             {
@@ -233,7 +275,6 @@ namespace adaptation_tp1_console
                     writer.WriteLine($"{pArtiste}|{pAlbum}|{pTitre}|{pCote}|{temps}");
                 }
             }
-            return;
         }
         #endregion
 
@@ -243,7 +284,7 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les options du menu dans la console
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-        void AfficherMenu()
+        static void AfficherMenu()
         {
             Console.WriteLine("===Menu===");
             Console.WriteLine("1. Afficher la liste de morceaux");
