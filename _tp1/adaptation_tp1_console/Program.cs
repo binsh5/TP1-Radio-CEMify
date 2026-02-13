@@ -83,9 +83,12 @@ namespace adaptation_tp1_console
         /// </summary>
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// ----------------------------------------------------------------------------------------
-        void AfficherListeDeMorceaux()
+        void AfficherListeDeMorceaux(List<Morceau> pListeMorceaux)
         {
-
+            for (int i = 0; i > pListeMorceaux.Count; i++)
+            {
+                Console.WriteLine(pListeMorceaux[i].ToString());
+            }
         }
         #endregion
 
@@ -102,7 +105,11 @@ namespace adaptation_tp1_console
         /// <param name="pDurée"> durée du morceau en secondes </param>
         /// <returns>  liste de morceaux contenant une chanson additionnelle  </returns>
         /// ----------------------------------------------------------------------------------------
-        
+        void opérationAjouter(List<Morceau> pListeMorceaux, string pArtiste, string pAlbum, string pTitre, int pCote, int pDurée)
+        {
+            Morceau morceau = new Morceau(pArtiste, pAlbum, pTitre, pCote, pDurée);
+            pListeMorceaux.Add(morceau);
+        }
         #endregion
 
         #region TODO 04 : Supprimer un morceau du répertoire (2%)
@@ -114,7 +121,10 @@ namespace adaptation_tp1_console
         /// <param name="pIndexMorceau"> index du morceau à supprimer dans la liste </param>
         /// <returns>  liste de morceaux contenant une chanson en moins  </returns>
         /// ----------------------------------------------------------------------------------------
-        
+        void OpérationSupprimer(List<Morceau> pListeMorceaux, int pIndexMorceau)
+        {
+            pListeMorceaux.RemoveAt(pIndexMorceau);
+        }
         #endregion
 
         #region TODO 05 : Modifier la cote d'appréciation d'un morceau (2%)
@@ -127,7 +137,15 @@ namespace adaptation_tp1_console
         /// <param name="pCote"> valeur de la nouvelle cote </param>
         /// <returns>  liste de morceaux modifiée  </returns>
         /// ----------------------------------------------------------------------------------------
-
+        void OpérationModiferCote(List<Morceau> pListeMorceaux, int pIndexMorceau, int pCote)
+        {
+            string pArtiste = pListeMorceaux[pIndexMorceau].Artiste;
+            string pAlbum = pListeMorceaux[pIndexMorceau].Album;
+            string pTitre = pListeMorceaux[pIndexMorceau].Titre;
+            int pDuré = pListeMorceaux[pIndexMorceau].Durée;
+            Morceau morceau = new Morceau(pArtiste, pAlbum, pTitre, pCote, pDuré);
+            pListeMorceaux[pIndexMorceau] = morceau;
+        }
         #endregion
 
         #region TODO 06 : Trier les morceaux du répertoire selon leur cote d'appréciation (10%)
@@ -138,6 +156,10 @@ namespace adaptation_tp1_console
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// <returns>  liste de morceaux triée  </returns>
         /// ----------------------------------------------------------------------------------------
+        void OpérationTrier(List<Morceau> pListeMorceaux)
+        {
+            pListeMorceaux.Sort((x, y) => y.Cote.CompareTo(x.Cote));
+        }
         #endregion
 
         #region TODO 07 : Afficher les informations d'un morceau (3%)
@@ -149,7 +171,15 @@ namespace adaptation_tp1_console
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// <param name="pIndexMorceau"> index du morceau sélectionné </param>
         /// ----------------------------------------------------------------------------------------
-       
+        void AfficherMorceauCourant(List<Morceau> pListeMorceaux, int pIndexMorceau)
+        {
+            string pArtiste = pListeMorceaux[pIndexMorceau].Artiste;
+            string pAlbum = pListeMorceaux[pIndexMorceau].Album;
+            string pTitre = pListeMorceaux[pIndexMorceau].Titre;
+            int pCote = pListeMorceaux[pIndexMorceau].Cote;
+            int pDuré = pListeMorceaux[pIndexMorceau].Durée;
+            Console.WriteLine($"{pTitre} de l'album {pAlbum} par {pArtiste}. Ce morceaux a une cote de {pCote} et est d'une durée de {pDuré} seconde");
+        }
         #endregion
 
         #region TODO 08 : Afficher les statistiques du répertoire (5%)
@@ -159,7 +189,19 @@ namespace adaptation_tp1_console
         /// </summary>
         /// <param name="pListeMorceaux"> liste de morceaux </param>
         /// ----------------------------------------------------------------------------------------
-       
+        void AfficherStats(List<Morceau> pListeMorceaux)
+        {
+            int temp = 0;
+            for (int i = 0; i > pListeMorceaux.Count; i++)
+            {
+                Console.WriteLine($"#{i}. {pListeMorceaux[i].Titre}");
+                temp += pListeMorceaux[i].Durée;
+            }
+            int h = temp / 3600;
+            int min = (temp % 3600) / 60;
+            int sec = temp % 60;
+            Console.WriteLine($"{h}:{min}:{sec}");
+        }
         #endregion
 
         #region TODO 09 : Enregistrer les modifications au moment de quitter (5%)
@@ -175,7 +217,24 @@ namespace adaptation_tp1_console
         /// <param name="pNomDuFichier"> nom du fichier dans lequel sauvegarder les informations </param>
         /// <param name="pListeMorceaux"> liste de morceaux à sauvegarder </param>
         /// -----------------------------------------------------------------------------------------------
-
+        void OpérationQuitter(List<Morceau> pListeMorceaux, string pNomDuFichier)
+        {
+            for (int i = 0; i < pListeMorceaux.Count; i++)
+            {
+                string pArtiste = pListeMorceaux[i].Artiste;
+                string pAlbum = pListeMorceaux[i].Album;
+                string pTitre = pListeMorceaux[i].Titre;
+                int pCote = pListeMorceaux[i].Cote;
+                int pDuré = pListeMorceaux[i].Durée;
+                int min = pDuré / 60;
+                string temps = $"{min}:{(pDuré - (min * 60))}";
+                using (StreamWriter writer = new StreamWriter(BIBLIOTHEQUE, false))
+                {
+                    writer.WriteLine($"{pArtiste}|{pAlbum}|{pTitre}|{pCote}|{temps}");
+                }
+            }
+            return;
+        }
         #endregion
 
         #region TODO 10 : Afficher le menu utilisateur dans la console (4%)
@@ -184,7 +243,18 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les options du menu dans la console
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-       
+        void AfficherMenu()
+        {
+            Console.WriteLine("===Menu===");
+            Console.WriteLine("1. Afficher la liste de morceaux");
+            Console.WriteLine("2. Ajouter un morceaux à la liste");
+            Console.WriteLine("3. Supprimer un morceaux de la liste");
+            Console.WriteLine("4. Modifer la cote d'un morceaux de la liste");
+            Console.WriteLine("5. Trier les morceaux de la liste en order décroissant de cote");
+            Console.WriteLine("6. Afficher les information du morceau courant");
+            Console.WriteLine("7. Afficher les stats des morceaux de la liste (# des morceaux et durée total)");
+            Console.WriteLine("8. Quitter");
+        }
 
         #endregion
 
@@ -202,7 +272,7 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les options de connexions au démarrage : "se créer un compte" et "continuer en tant qu'invité"
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-       
+
         #endregion
 
         #region TODO 15 : Afficher le profil d'un utilisateur connecté (2%)
@@ -211,7 +281,7 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les informations d'un utilisateur : son nom d'utilisateur, son mot de passe caché par des *, son statut 
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-       
+
         #endregion
 
 
