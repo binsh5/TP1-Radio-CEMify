@@ -38,8 +38,10 @@ namespace adaptation_tp1_console
             /// Effectuer la logique du menu utilisateur dans une boucle qui prend fin seulement lorsque l'utilisateur décide de quitter.
             /// Astuces : la boucle while et le switch-case vous seront utiles ;)
             bool a = true;
+            int index;
             while (a == true)
             {
+                Console.Clear();
                 AfficherMenu();
                 int option = int.Parse(Console.ReadLine());
                 switch (option)
@@ -65,11 +67,36 @@ namespace adaptation_tp1_console
                     case 3:
                         Console.Clear();
                         Console.WriteLine("Enter la position du morceau à supprimer dans la liste:");
-                        int index = int.Parse(Console.ReadLine());
+                        index = int.Parse(Console.ReadLine());
                         OpérationSupprimer(pListeMorceaux, index);
                         break;
-                    case 4: // a continuer 
-
+                    case 4:
+                        Console.Clear();
+                        Console.WriteLine("Enter la position du morceau au quel vous voulez modifier dans la cote:");
+                        index = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Enter la nouvelle cote sur 5 :");
+                        cote = int.Parse(Console.ReadLine());
+                        OpérationModiferCote(pListeMorceaux, index, cote);
+                        break;
+                    case 5:
+                        Console.Clear();
+                        OpérationTrier(pListeMorceaux);
+                        Console.WriteLine("La liste a été trié en ordre décroissant de cote");
+                        break;
+                    case 6:
+                        Console.Clear();
+                        Console.WriteLine("Enter la position du morceau à afficher dans la liste:");
+                        index = int.Parse(Console.ReadLine());
+                        AfficherMorceauCourant(pListeMorceaux, index);
+                        break;
+                    case 7:
+                        Console.Clear();
+                        AfficherStats(pListeMorceaux);
+                        break;
+                    case 8:
+                        OpérationQuitter(pListeMorceaux, pNomDuFichier);
+                        a = false;
+                        break;
                     default: Console.WriteLine("option invalide");
                         break;
                 }
@@ -313,7 +340,12 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les options de connexions au démarrage : "se créer un compte" et "continuer en tant qu'invité"
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-
+        static void PageDémarrage()
+        {
+            Console.WriteLine("===Bienvenue à la radio étudiante===");
+            Console.WriteLine("1. Se créer un compte");
+            Console.WriteLine("2. Continuer en tant qu'invité");
+        }
         #endregion
 
         #region TODO 15 : Afficher le profil d'un utilisateur connecté (2%)
@@ -322,7 +354,10 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les informations d'un utilisateur : son nom d'utilisateur, son mot de passe caché par des *, son statut 
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
+        static void AfficherProfil()
+        {
 
+        }
         #endregion
 
 
