@@ -14,28 +14,29 @@ namespace adaptation_tp1_console
             Invité,
             Étudiant
         }
+
         private string m_motDePasse;
         private string m_nomUtilisateur;
-        private string m_statut;
+        private TypeUtilisateur m_statut;
 
-        public string MotDePasse
-        {
-            get { return m_motDePasse; }
-        }
+        public int MotDePasse { get; private set; }
 
         public string MotDePasseMasqué
         {
-            get { return m_motDePasse; }
+            get { return new string('*', m_motDePasse.Length); }
         }
         public string NomFichierListeLecture
         {
-            get { }
+            get
+            {
+                    return $"{m_nomUtilisateur}_ListeLecture.csv";
+            }
         }
         public string NomUtilisateur
         {
             get { return m_nomUtilisateur; }
         }
-        public string Statut
+        public TypeUtilisateur Statut
         {
             get { return m_statut; }
         }
@@ -49,14 +50,14 @@ namespace adaptation_tp1_console
         {
             m_nomUtilisateur = "invité";
             m_motDePasse = null;
-            m_statut = TypeUtilisateur.Invité.ToString();
+            m_statut = TypeUtilisateur.Invité;
 
         }
         public Utilisateur(string nom, string motDePasse)
         {
             m_motDePasse = motDePasse;
             m_nomUtilisateur = nom;
-            m_statut = TypeUtilisateur.Étudiant.ToString();
+            m_statut = TypeUtilisateur.Étudiant;
         }
     }
 }

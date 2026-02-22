@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.NetworkInformation;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -28,7 +29,8 @@ namespace adaptation_tp1_console
             #region TODO 11 : Chargements des listes à partir des fichiers CSV (5%)
             // TODO 11 : Appeler la méthode ChargerMorceaux() pour charger le répertoire musical de la radio étudiante, ainsi
             // que la liste de lecture de l'utilisateur SI APPROPRIÉ
-            string pNomDuFichier = null;
+            Utilisateur utilisateur = PageDémarrage();
+            string pNomDuFichier = utilisateur.NomFichierListeLecture;
             List<Morceau> pListeMorceaux = new List<Morceau>();
             ChargerMorceaux(pNomDuFichier, pListeMorceaux);
             #endregion
@@ -43,7 +45,7 @@ namespace adaptation_tp1_console
             {
                 Console.Clear();
                 AfficherMenu();
-                int option = int.Parse(Console.ReadLine());
+                int.TryParse(Console.ReadLine(), out int option);
                 switch (option)
                 {
                     case 1:
@@ -59,23 +61,23 @@ namespace adaptation_tp1_console
                         Console.WriteLine("Titre :");
                         string titre = Console.ReadLine();
                         Console.WriteLine("Cote sur 5:");
-                        int cote = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out int cote);
                         Console.WriteLine("Durée en secondes");
-                        int duree = int.Parse(Console.ReadLine());
-                        opérationAjouter(pListeMorceaux, artiste, album, titre, cote, duree);
+                        int.TryParse(Console.ReadLine(), out int duree);
+                        OpérationAjouter(pListeMorceaux, artiste, album, titre, cote, duree);
                         break;
                     case 3:
                         Console.Clear();
                         Console.WriteLine("Enter la position du morceau à supprimer dans la liste:");
-                        index = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out index);
                         OpérationSupprimer(pListeMorceaux, index);
                         break;
                     case 4:
                         Console.Clear();
                         Console.WriteLine("Enter la position du morceau au quel vous voulez modifier dans la cote:");
-                        index = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out index);
                         Console.WriteLine("Enter la nouvelle cote sur 5 :");
-                        cote = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out cote);
                         OpérationModiferCote(pListeMorceaux, index, cote);
                         break;
                     case 5:
@@ -86,7 +88,7 @@ namespace adaptation_tp1_console
                     case 6:
                         Console.Clear();
                         Console.WriteLine("Enter la position du morceau à afficher dans la liste:");
-                        index = int.Parse(Console.ReadLine());
+                        int.TryParse(Console.ReadLine(), out index);
                         AfficherMorceauCourant(pListeMorceaux, index);
                         break;
                     case 7:
@@ -94,7 +96,7 @@ namespace adaptation_tp1_console
                         AfficherStats(pListeMorceaux);
                         break;
                     case 8:
-                        OpérationQuitter(pListeMorceaux, pNomDuFichier);
+                        OpérationQuitter(pNomDuFichier, pListeMorceaux);
                         a = false;
                         break;
                     default: Console.WriteLine("option invalide");
@@ -170,7 +172,7 @@ namespace adaptation_tp1_console
         /// <param name="pDurée"> durée du morceau en secondes </param>
         /// <returns>  liste de morceaux contenant une chanson additionnelle  </returns>
         /// ----------------------------------------------------------------------------------------
-        internal static List<Morceau> opérationAjouter(List<Morceau> pListeMorceaux, string pArtiste, string pAlbum, string pTitre, int pCote, int pDurée)
+        internal static List<Morceau> OpérationAjouter(List<Morceau> pListeMorceaux, string pArtiste, string pAlbum, string pTitre, int pCote, int pDurée)
         {
             Morceau morceau = new Morceau(pArtiste, pAlbum, pTitre, pCote, pDurée);
             pListeMorceaux.Add(morceau);
@@ -226,7 +228,23 @@ namespace adaptation_tp1_console
         /// ----------------------------------------------------------------------------------------
         internal static List<Morceau> OpérationTrier(List<Morceau> pListeMorceaux) // a refaire
         {
-            pListeMorceaux.Sort((x, y) => y.Cote.CompareTo(x.Cote));
+            for (int i = 0; i < pListeMorceaux.Count; i++)
+            {
+                for (int j = 1; j < pListeMorceaux.Count; j++)
+                {
+                    if (pListeMorceaux[i].Cote > pListeMorceaux[j].Cote)
+                    {
+                        string pArtiste = pListeMorceaux[i].Artiste;
+                        string pAlbum = pListeMorceaux[i].Album;
+                        string pTitre = pListeMorceaux[i].Titre;
+                        int pCote = pListeMorceaux[i].Cote;
+                        int pDuré = pListeMorceaux[i].Durée;
+                        Morceau morceau = new Morceau(pArtiste, pAlbum, pTitre, pCote, pDuré);
+                        pListeMorceaux[i] = pListeMorceaux[j];
+                        pListeMorceaux[j] = morceau;
+                    }
+                }
+            }
             return pListeMorceaux;
         }
         #endregion
@@ -286,7 +304,7 @@ namespace adaptation_tp1_console
         /// <param name="pNomDuFichier"> nom du fichier dans lequel sauvegarder les informations </param>
         /// <param name="pListeMorceaux"> liste de morceaux à sauvegarder </param>
         /// -----------------------------------------------------------------------------------------------
-        static void OpérationQuitter(List<Morceau> pListeMorceaux, string pNomDuFichier)
+        static void OpérationQuitter(string pNomDuFichier, List<Morceau> pListeMorceaux)
         {
             for (int i = 0; i < pListeMorceaux.Count; i++)
             {
@@ -340,11 +358,54 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les options de connexions au démarrage : "se créer un compte" et "continuer en tant qu'invité"
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-        static void PageDémarrage()
+        static Utilisateur PageDémarrage()
         {
-            Console.WriteLine("===Bienvenue à la radio étudiante===");
-            Console.WriteLine("1. Se créer un compte");
-            Console.WriteLine("2. Continuer en tant qu'invité");
+            bool a = false;
+            Utilisateur utilisateur = new Utilisateur();
+            while (a == false)
+            {
+                Console.WriteLine("===Bienvenue à la radio étudiante===");
+                Console.WriteLine("1. Se créer un compte");
+                Console.WriteLine("2. Continuer en tant qu'invité");
+                char.TryParse(Console.ReadLine(), out char choix);
+                switch (choix)
+                {
+                    case '1':
+                        bool b = false;
+                        while (b == false)
+                        {
+                            Console.Write("Entrer un nom d'utilisateur : ");
+                            string nom = Console.ReadLine();
+                            Console.WriteLine("Enter un mot de passe : ");
+                            string mdp = Console.ReadLine();
+                            Console.WriteLine("Confirmer le mot de passe : ");
+                            string verif = Console.ReadLine();
+                            if (mdp == verif)
+                            {
+                                Console.WriteLine("Compte créé");
+                                Utilisateur utilisateurConnecter = new Utilisateur(nom, mdp);
+                                b = true;
+                                utilisateur = utilisateurConnecter;
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Mot de passe invalide");
+                            }
+                        }
+                        a = true;
+                        break;
+                    case '2':
+                        Utilisateur invite = new Utilisateur();
+                        a = true;
+                        utilisateur = invite;
+                        break;
+                    default:
+                        Console.WriteLine("Choix invalide.");
+                        break;
+                }
+            }
+            return utilisateur;
         }
         #endregion
 
@@ -354,9 +415,14 @@ namespace adaptation_tp1_console
         /// Permet d'afficher les informations d'un utilisateur : son nom d'utilisateur, son mot de passe caché par des *, son statut 
         /// </summary>
         /// -----------------------------------------------------------------------------------------------
-        static void AfficherProfil()
+        static void AfficherProfil(Utilisateur utilisateur)
         {
-
+            string nom = utilisateur.NomUtilisateur;
+            string mdp = utilisateur.MotDePasseMasqué;
+            string statut = utilisateur.Statut.ToString();
+            Console.WriteLine($"Nom d'utilisateur : {nom}");
+            Console.WriteLine($"Mot de passe : {mdp}");
+            Console.WriteLine($"Statut : {statut}");
         }
         #endregion
 
