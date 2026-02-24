@@ -41,19 +41,20 @@ namespace adaptation_tp1_console
             /// Astuces : la boucle while et le switch-case vous seront utiles ;)
             bool a = true;
             int index;
-            while (a == true)
+            Console.Clear();
+            while (a == true) // while pour que le menu sois en boucle tant que l'utilisateur n'a pas choisi de quitter
             {
-                Console.Clear();
-                AfficherMenu();
+                AfficherMenu(); // afficher le menu à chaque tour de boucle
                 int.TryParse(Console.ReadLine(), out int option);
-                switch (option)
+                switch (option) // switch pour que ce sois plus facile à lire et à faire les choix
                 {
-                    case 1:
+                    case 1: //aafficher la liste de morceaux
+                        Console.Clear();
                         AfficherListeDeMorceaux(pListeMorceaux);
                         break;
-                    case 2:
+                    case 2: // ajouter un morceau à la liste
                         Console.Clear();
-                        Console.WriteLine("Enter les paramètres suivant:");
+                        Console.WriteLine("Enter les paramètres suivant:"); // demander les informations nécessaires pour ajouter un morceau à la liste
                         Console.WriteLine("Artiste :");
                         string artiste = Console.ReadLine();
                         Console.WriteLine("Album :");
@@ -64,42 +65,42 @@ namespace adaptation_tp1_console
                         int.TryParse(Console.ReadLine(), out int cote);
                         Console.WriteLine("Durée en secondes");
                         int.TryParse(Console.ReadLine(), out int duree);
-                        OpérationAjouter(pListeMorceaux, artiste, album, titre, cote, duree);
+                        OpérationAjouter(pListeMorceaux, artiste, album, titre, cote, duree); // appeler la méthode pour ajouter un morceau à la liste
                         break;
-                    case 3:
+                    case 3: // supprimer un morceau de la liste
                         Console.Clear();
-                        Console.WriteLine("Enter la position du morceau à supprimer dans la liste:");
+                        Console.WriteLine("Enter la position du morceau à supprimer dans la liste:"); // demander l'index du morceau à supprimer
                         int.TryParse(Console.ReadLine(), out index);
-                        OpérationSupprimer(pListeMorceaux, index);
+                        OpérationSupprimer(pListeMorceaux, index); // appeler la méthode pour supprimer un morceau de la liste
                         break;
-                    case 4:
+                    case 4: // modifier la cote d'un morceau de la liste
                         Console.Clear();
-                        Console.WriteLine("Enter la position du morceau au quel vous voulez modifier dans la cote:");
+                        Console.WriteLine("Enter la position du morceau au quel vous voulez modifier dans la cote:"); // demander l'index du morceau à modifier
                         int.TryParse(Console.ReadLine(), out index);
                         Console.WriteLine("Enter la nouvelle cote sur 5 :");
                         int.TryParse(Console.ReadLine(), out cote);
-                        OpérationModiferCote(pListeMorceaux, index, cote);
+                        OpérationModiferCote(pListeMorceaux, index, cote); // appeler la méthode pour modifier la cote d'un morceau de la liste
                         break;
-                    case 5:
+                    case 5: // trier les morceaux de la liste en ordre décroissant de cote
                         Console.Clear();
                         OpérationTrier(pListeMorceaux);
                         Console.WriteLine("La liste a été trié en ordre décroissant de cote");
                         break;
-                    case 6:
+                    case 6: // afficher les information du morceau courant
                         Console.Clear();
-                        Console.WriteLine("Enter la position du morceau à afficher dans la liste:");
+                        Console.WriteLine("Enter la position du morceau à afficher dans la liste:"); // demander l'index du morceau à afficher
                         int.TryParse(Console.ReadLine(), out index);
-                        AfficherMorceauCourant(pListeMorceaux, index);
+                        AfficherMorceauCourant(pListeMorceaux, index); // appeler la méthode pour afficher les informations d'un morceau de la liste
                         break;
-                    case 7:
+                    case 7: // afficher les stats des morceaux de la liste (# des morceaux et durée total)
                         Console.Clear();
-                        AfficherStats(pListeMorceaux);
+                        AfficherStats(pListeMorceaux); // appeler la méthode pour afficher les statistiques de la liste de morceaux
                         break;
                     case 8:
-                        OpérationQuitter(pNomDuFichier, pListeMorceaux);
+                        OpérationQuitter(pNomDuFichier, pListeMorceaux); // appeler la méthode pour enregistrer les modifications au moment de quitter
                         a = false;
                         break;
-                    default: Console.WriteLine("option invalide");
+                    default: Console.WriteLine("option invalide"); // si l'utilisateur entre une option invalide, on affiche un message d'erreur et on recommence la boucle
                         break;
                 }
             }
@@ -152,7 +153,7 @@ namespace adaptation_tp1_console
         /// ----------------------------------------------------------------------------------------
         static void AfficherListeDeMorceaux(List<Morceau> pListeMorceaux)
         {
-            for (int i = 0; i > pListeMorceaux.Count; i++)
+            for (int i = 0; i < pListeMorceaux.Count; i++)
             {
                 Console.WriteLine(pListeMorceaux[i].ToString());
             }
@@ -279,7 +280,7 @@ namespace adaptation_tp1_console
         static void AfficherStats(List<Morceau> pListeMorceaux)
         {
             int temp = 0;
-            for (int i = 0; i > pListeMorceaux.Count; i++)
+            for (int i = 0; i < pListeMorceaux.Count; i++)
             {
                 Console.WriteLine($"#{i}. {pListeMorceaux[i].Titre}");
                 temp += pListeMorceaux[i].Durée;
@@ -332,6 +333,7 @@ namespace adaptation_tp1_console
         static void AfficherMenu()
         {
             Console.WriteLine("===Menu===");
+            Console.WriteLine();
             Console.WriteLine("1. Afficher la liste de morceaux");
             Console.WriteLine("2. Ajouter un morceaux à la liste");
             Console.WriteLine("3. Supprimer un morceaux de la liste");
@@ -362,17 +364,18 @@ namespace adaptation_tp1_console
         {
             bool a = false;
             Utilisateur utilisateur = new Utilisateur();
-            while (a == false)
+            while (a == false) // while pour que ce sois en boucle tant que l'utilisateur n'a pas fait un choix valide
             {
                 Console.WriteLine("===Bienvenue à la radio étudiante===");
+                Console.WriteLine();
                 Console.WriteLine("1. Se créer un compte");
                 Console.WriteLine("2. Continuer en tant qu'invité");
                 char.TryParse(Console.ReadLine(), out char choix);
-                switch (choix)
+                switch (choix) // switch pour que ce sois plus facile à lire et à faire les choix
                 {
                     case '1':
                         bool b = false;
-                        while (b == false)
+                        while (b == false) // while pour que ce sois en boucle tant que l'utilisateur n'a pas entré des informations valides
                         {
                             Console.Write("Entrer un nom d'utilisateur : ");
                             string nom = Console.ReadLine();
@@ -380,7 +383,7 @@ namespace adaptation_tp1_console
                             string mdp = Console.ReadLine();
                             Console.WriteLine("Confirmer le mot de passe : ");
                             string verif = Console.ReadLine();
-                            if (mdp == verif)
+                            if (mdp == verif) // if pour vérifier que le mot de passe et la vérification sont les mêmes
                             {
                                 Console.WriteLine("Compte créé");
                                 Utilisateur utilisateurConnecter = new Utilisateur(nom, mdp);
@@ -395,17 +398,17 @@ namespace adaptation_tp1_console
                         }
                         a = true;
                         break;
-                    case '2':
+                    case '2': // si l'utilisateur choisit de continuer en tant qu'invité, on crée un utilisateur avec les informations par défaut
                         Utilisateur invite = new Utilisateur();
                         a = true;
                         utilisateur = invite;
                         break;
-                    default:
+                    default: // si l'utilisateur entre un choix invalide, on affiche un message d'erreur et on recommence la boucle
                         Console.WriteLine("Choix invalide.");
                         break;
                 }
             }
-            return utilisateur;
+            return utilisateur; // on retourne l'utilisateur qui a été créé ou invité pour que les autres méthodes puissent l'utiliser
         }
         #endregion
 
@@ -417,7 +420,7 @@ namespace adaptation_tp1_console
         /// -----------------------------------------------------------------------------------------------
         static void AfficherProfil(Utilisateur utilisateur)
         {
-            string nom = utilisateur.NomUtilisateur;
+            string nom = utilisateur.NomUtilisateur; // on récupère les informations de l'utilisateur à afficher
             string mdp = utilisateur.MotDePasseMasqué;
             string statut = utilisateur.Statut.ToString();
             Console.WriteLine($"Nom d'utilisateur : {nom}");
